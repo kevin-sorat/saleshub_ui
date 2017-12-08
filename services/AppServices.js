@@ -22,7 +22,7 @@ export function getSalesOpportunitiesFromServer(uicomponent, callback) {
   console.log("==================> getSalesOpportunitiesFromServer!!!");
   const { page, seed } = uicomponent.state;
   const url = "https://salesmanhub.mybluemix.net/api/salesopportunities";
-  uicomponent.setState({ loading: true });
+  // uicomponent.setState({ loading: true });
   fetch(url)
     .then(res => res.json())
     .then(res => {

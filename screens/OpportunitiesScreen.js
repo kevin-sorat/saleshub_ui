@@ -16,16 +16,18 @@ class OpportunitiesScreen extends React.Component {
     this.state = {
       data: []
     };
+
+    this.getSalesOpportunities = this.getSalesOpportunities.bind(this);
   }
 
   componentDidMount() {
     console.log("==================> componentDidMount!!!");
-    appServices.getSalesOpportunitiesFromServer(this);
+    this.getSalesOpportunities();
   }
 
   componentDidFocus() {
     console.log("==================> componentDidFocus!!!");
-    // appServices.getSalesOpportunitiesFromServer(this);
+    // this.getSalesOpportunities();
   }
 
   componentDidUpdate() {
@@ -34,7 +36,7 @@ class OpportunitiesScreen extends React.Component {
 
   renderHeader = () => {
     return <SearchBar placeholder="Keyword..." lightTheme round />;
-  };
+  }
 
   /*
   render() {
@@ -67,13 +69,32 @@ class OpportunitiesScreen extends React.Component {
     // this.setState({
     //   isRefreshing: true
     // });
-    console.log("================> onRefresh");
-    appServices.getSalesOpportunitiesFromServer(this);
 
     // this.setState({
     //   isRefreshing: false
     // });
-  };
+  }
+
+  getSalesOpportunities() {
+    console.log("================> onRefresh");
+    // this.setState({ loading: true });
+    appServices.getSalesOpportunitiesFromServer(this, (error, result) => {
+      if (!error) {
+        const { page, seed } = this.state;
+        this.setState({
+          data: page === 1 ? result : [...this.state.data, ...result],
+          error: result.error || null,
+          loading: false,
+          refreshing: false,
+        });
+
+      } else {
+
+        console.error(error);
+
+      }
+    });
+  }
 
   someFun() {
     console.log("================> someFun");
