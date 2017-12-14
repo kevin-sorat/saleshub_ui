@@ -18,39 +18,24 @@ export function makeRemoteRequest(uicomponent) {
     });
 };
     
-export function getSalesOpportunitiesFromServer(uicomponent, callback) {
+export function getSalesOpportunitiesFromServer(callback) {
   console.log("==================> getSalesOpportunitiesFromServer!!!");
-  const { page, seed } = uicomponent.state;
+
   const url = "https://salesmanhub.mybluemix.net/api/salesopportunities";
-  // uicomponent.setState({ loading: true });
   fetch(url)
     .then(res => res.json())
     .then(res => {
-
       return callback(null, res);
-
-      /*
-      uicomponent.setState({
-        data: page === 1 ? res : [...uicomponent.state.data, ...res],
-        error: res.error || null,
-        loading: false,
-        refreshing: false,
-      });
-      */
     })
     .catch(error => {
-
       return callback(error);
-
-      // uicomponent.setState({ error, loading: false });
     });
 }
 
-export function createNewSalesOpportunity(salesOpportunity, goBack) {
+export function createNewSalesOpportunity(salesOpportunity, callback) {
+  console.log("==================> createNewSalesOpportunity!!!");
+  
   const url = "https://salesmanhub.mybluemix.net/api/salesopportunities";
-
-  // console.log("======================> salesOpportunity.companyname " + salesOpportunity.companyname);
-
   fetch(url, {
     method: "post",
     headers: {
@@ -67,7 +52,7 @@ export function createNewSalesOpportunity(salesOpportunity, goBack) {
     //.then(json)  
     .then(function (data) {
       console.log('Request succeeded with JSON response', data);
-      goBack();
+      callback();
     })
     .catch(function (error) {
       console.log('Request failed', error);

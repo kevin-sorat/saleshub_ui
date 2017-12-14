@@ -1,15 +1,12 @@
 import React from 'react';
 import { View, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
-import { Button, FormLabel, FormInput, FormValidationMessage } from 'react-native-elements'
+import { Button, FormLabel, FormInput, FormValidationMessage, Header } from 'react-native-elements'
 
 import AppModel from "../model/AppModel";
 import * as appServices from "../services/AppServices";
 import SalesOpportunity from "../model/SalesOpportunity";
 
 export default class NewSalesOpportunityScreen extends React.Component {
-  static navigationOptions = {
-    title: 'New Sales Opportunity',
-  };
 
   constructor(props) {
     super(props);
@@ -22,19 +19,23 @@ export default class NewSalesOpportunityScreen extends React.Component {
     };
   }
 
-  submitButtonOnPressHandler(goBack) {
+  submitButtonOnPressHandler() {
     let newSalesOpportunityObj = new SalesOpportunity(this.state.nameInput, 
       this.state.descInput, this.state.priceInput, this.state.commissionInput);
 
     // Call function to save new sale opportunity on the server
-    appServices.createNewSalesOpportunity(newSalesOpportunityObj, goBack);
+    appServices.createNewSalesOpportunity(newSalesOpportunityObj, this.props.dismissModalAndUpdate);
   }
 
   render() {
-    const {goBack} = this.props.navigation;
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
+          <Header
+            leftComponent={{ icon: 'chevron-left', onPress: () => this.props.dismissModalAndUpdate() }}
+            centerComponent={{ text: 'New Sales Opportunity' }}
+            backgroundColor={'lightblue'}
+          />
           <View>
             <FormLabel>Company name</FormLabel>
             <FormInput 
@@ -64,7 +65,7 @@ export default class NewSalesOpportunityScreen extends React.Component {
             icon={{name: 'diff-added', type: 'octicon' }}
             backgroundColor='darkblue'
             style={styles.submitButtonStyle}
-            onPress={() => { this.submitButtonOnPressHandler(goBack)}}
+            onPress={() => { this.submitButtonOnPressHandler()}}
             title='Submit' />
         </View>
       </TouchableWithoutFeedback>
@@ -75,7 +76,7 @@ export default class NewSalesOpportunityScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 15,
+    paddingTop: 80,
     paddingBottom: 15,
     backgroundColor: '#fff',
     justifyContent: 'space-between'
