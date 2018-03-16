@@ -6,31 +6,34 @@ import { TabNavigator, TabBarBottom } from 'react-navigation';
 import Colors from '../constants/Colors';
 
 import SalesmenScreen from '../screens/SalesmenScreen';
-// import OpportunitiesScreen from '../screens/OpportunitiesScreen';
-import OpportunitiesScreen from '../screens/OpportunitiesScreen2';
+import OpportunitiesScreen from '../screens/OpportunitiesScreen';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import UserProfileScreen from  '../screens/UserProfileScreen';
 
 export default TabNavigator(
   {
     Opportunities: {
       screen: OpportunitiesScreen,
     },
+    Profile: {
+      screen: UserProfileScreen,
+    },
     /*
     Salesmen: {
       screen: SalesmenScreen,
     },
-    */
     Home: {
       screen: HomeScreen,
     },
     Links: {
       screen: LinksScreen,
     },
+    */
     Settings: {
       screen: SettingsScreen,
-    },
+    }
   },
   {
     navigationOptions: ({ navigation }) => ({
@@ -39,16 +42,9 @@ export default TabNavigator(
         let iconName;
         switch (routeName) {
           case 'Salesmen':
-            iconName = Platform.OS === 'ios'
-              ? `ios-information-circle${focused ? '' : '-outline'}`
-              : 'md-information-circle';
-            break;
           case 'Opportunities':
-            iconName = Platform.OS === 'ios'
-              ? `ios-information-circle${focused ? '' : '-outline'}`
-              : 'md-information-circle';
-            break;
           case 'Home':
+          case 'Profile':
             iconName = Platform.OS === 'ios'
               ? `ios-information-circle${focused ? '' : '-outline'}`
               : 'md-information-circle';

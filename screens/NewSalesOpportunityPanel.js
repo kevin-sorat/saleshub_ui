@@ -1,30 +1,73 @@
 import React from 'react';
 import { View, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
-import { Button, FormLabel, FormInput, FormValidationMessage, Header } from 'react-native-elements'
+import { Button, FormLabel, FormInput, FormValidationMessage, Header } from 'react-native-elements';
 
-import AppModel from "../model/AppModel";
 import * as appServices from "../services/AppServices";
 import SalesOpportunity from "../model/SalesOpportunity";
 
-export default class NewSalesOpportunityScreen extends React.Component {
+export default class NewSalesOpportunityPanel extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      nameInput:"",
+      nameInput: "",
       descInput: "",
       priceInput: "",
-      commissionInput: ""
+      commissionInput: "",
+      userid: props.currentUser.userID
     };
+
+    this._isFormComplete = this._isFormComplete.bind(this);
   }
 
+  componentDidMount() {
+    console.log("==============> componentDidMount");
+    this.getCompanyInfo();
+    /*
+    if (this.props.companyInfo &&
+      this.props.companyInfo.companyname &&
+      this.props.companyInfo.companyname.length > 0) {
+      this.setState({ nameInput: this.props.companyInfo.companyname });
+      console.log("==============> companyname: " + this.state.nameInput);
+    }
+    */
+  }
+
+  getCompanyInfo() {
+    appServices.getCompanyInfoFromServer(this.state.userid, (error, result) => {
+      if (!error) {
+        this.setState({ nameInput: result.companyname });
+      }
+      console.log("==============> companyname: " + this.state.nameInput);
+    });
+  }
+
+  /*
+  componentWillReceiveProps(nextProps) {
+    console.log("==============> componentWillReceiveProps A");
+    if (this.props.companyInfo !== nextProps.companyInfo) {
+      console.log("==============> componentWillReceiveProps B");
+      if (this.props.companyInfo &&
+        this.props.companyInfo.companyname &&
+        this.props.companyInfo.companyname.length > 0) {
+        this.setState({ nameInput: this.props.companyInfo.companyname });
+      }
+    }
+  }
+  */
+
   submitButtonOnPressHandler() {
-    let newSalesOpportunityObj = new SalesOpportunity(this.state.nameInput, 
-      this.state.descInput, this.state.priceInput, this.state.commissionInput);
+    let newSalesOpportunityObj = new SalesOpportunity(this.state.nameInput,
+      this.state.descInput, this.state.priceInput, this.state.commissionInput, this.state.userid);
 
     // Call function to save new sale opportunity on the server
     appServices.createNewSalesOpportunity(newSalesOpportunityObj, this.props.dismissModalAndUpdate);
+  }
+
+  _isFormComplete() {
+    return (this.state.nameInput.length > 0 && this.state.descInput.length > 0 &&
+      this.state.priceInput.length > 0 && this.state.commissionInput.length > 0);
   }
 
   render() {
@@ -38,34 +81,39 @@ export default class NewSalesOpportunityScreen extends React.Component {
           />
           <View>
             <FormLabel>Company name</FormLabel>
-            <FormInput 
-              ref={input => this.nameFormInput = input}
-              onChangeText={nameInput => this.setState({nameInput})}
+            <FormInput
+              style={styles.formInput}
+              value={this.state.nameInput}
+              onChangeText={nameInput => this.setState({ nameInput })}
             />
             <FormLabel>Product/Service description</FormLabel>
-            <FormInput 
+            <FormInput
+              style={styles.formInput}
               multiline={true}
-              ref={input => this.descFormInput = input}
-              onChangeText={descInput => this.setState({descInput})}
+              ref={input => this.descInput = input}
+              onChangeText={descInput => this.setState({ descInput })}
             />
             <FormLabel>Price</FormLabel>
-            <FormInput 
-              keyboardType={'numeric'} 
-              ref={input => this.priceFormInput = input}
-              onChangeText={priceInput => this.setState({priceInput})}
+            <FormInput
+              style={styles.formInput}
+              keyboardType={'numeric'}
+              ref={input => this.priceInput = input}
+              onChangeText={priceInput => this.setState({ priceInput })}
             />
             <FormLabel>Commission</FormLabel>
-            <FormInput 
-              keyboardType={'numeric'} 
-              ref={input => this.commissionFormInput = input}
-              onChangeText={commissionInput => this.setState({commissionInput})}
+            <FormInput
+              style={styles.formInput}
+              keyboardType={'numeric'}
+              ref={input => this.commissionInput = input}
+              onChangeText={commissionInput => this.setState({ commissionInput })}
             />
           </View>
-          <Button 
-            icon={{name: 'diff-added', type: 'octicon' }}
+          <Button
+            disabled={!this._isFormComplete()}
             backgroundColor='darkblue'
             style={styles.submitButtonStyle}
-            onPress={() => { this.submitButtonOnPressHandler()}}
+            containerViewStyle={{ borderWidth: 0.5 }}
+            onPress={() => { this.submitButtonOnPressHandler() }}
             title='Submit' />
         </View>
       </TouchableWithoutFeedback>
@@ -81,6 +129,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     justifyContent: 'space-between'
   },
-  submitButtonStyle: {
+  formInput: {
+    width: '100%',
+    paddingTop: 5,
+    fontSize: 15.24,
   }
 });

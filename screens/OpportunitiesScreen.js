@@ -1,132 +1,169 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Button, FlatList, Modal, TouchableHighlight } from 'react-native';
 import { List, ListItem, SearchBar } from 'react-native-elements';
-import { StackNavigator } from 'react-navigation';
-import NewSalesOpportunityScreen from './NewSalesOpportunityScreen';
 import * as appServices from "../services/AppServices";
+import NewSalesOpportunityPanel from './NewSalesOpportunityPanel';
 
-class OpportunitiesScreen extends React.Component {
+export default class OpportunitiesScreen extends React.Component {
   static navigationOptions = {
-    title: 'Available Sales Opportunities',
+    title: 'Sales',
   };
 
   constructor(props) {
     super(props);
-
+ 
     this.state = {
-      data: []
+      filteredData: [],
+      rawData: [],
+      refreshing: false,
+      modalVisible: false
     };
 
     this.getSalesOpportunities = this.getSalesOpportunities.bind(this);
+    this.dismissModalAndUpdate = this.dismissModalAndUpdate.bind(this);
+    this.searchBarChangeTextHandler = this.searchBarChangeTextHandler.bind(this);
+    this.searchBarClearTextHandler = this.searchBarClearTextHandler.bind(this);
+    this.applyFilter = this.applyFilter.bind(this);
   }
 
   componentDidMount() {
-    console.log("==================> componentDidMount!!!");
-    this.getSalesOpportunities();
+    this.refreshSalesOpportunities();
   }
 
-  componentDidFocus() {
-    console.log("==================> componentDidFocus!!!");
-    // this.getSalesOpportunities();
+  componentWillReceiveProps(nextProps) {
+    console.log("==============> componentWillReceiveProps 2");
+    /*
+    if (this.props.companyInfo !== nextProps.companyInfo) {
+      console.log("==============> componentWillReceiveProps 2");
+      if (this.props.companyInfo &&
+        this.props.companyInfo.companyname &&
+        this.props.companyInfo.companyname.length > 0) {
+        this.setState({ nameInput: this.props.companyInfo.companyname });
+      }
+    }
+    */
   }
 
-  componentDidUpdate() {
-    console.log("==================> componentDidUpdate!!!");
+  searchBarChangeTextHandler(e) {
+    let text = e.toLowerCase();
+    console.log("==============> searchBarChangeTextHandler:" + text);
+
+    this.applyFilter(text);
   }
 
-  renderHeader = () => {
-    return <SearchBar placeholder="Keyword..." lightTheme round />;
+  applyFilter(text) {
+    if (text.length === 0) {
+      this.setState({
+        filteredData: this.state.rawData,
+      });
+    } else {
+      let filterByProductNameResults = this.filterByProductName(text);
+      // let filterByCompanyNameResults = this.filterByCompanyName(text);
+      let filteredResults = filterByProductNameResults;
+
+      console.log("text: " + text);
+      console.log("filteredResults: " + JSON.stringify(filteredResults));
+
+      this.setState({
+        filteredData: filteredResults,
+      });
+    }
   }
 
-  /*
-  render() {
-    const { navigate } = this.props.navigation;
-    return (
-      <List>
-        <Button
-          title="Post new sales"
-          onPress={() => navigate('NewOpportunity')}
-        />
-        <FlatList
-          ListHeaderComponent={this.renderHeader}
-          data={this.state.data}
-          keyExtractor={item => item.email}
-          renderItem={({ item }) => (
-            <ListItem
-              roundAvatar
-              title={`${item.name.first} ${item.name.last}`}
-              subtitle={`${item.location.city}, ${item.location.state}`}
-              avatar={{ uri: item.picture.thumbnail }}
-            />
-          )}
-        />
-      </List>
-    );
+  filterByProductName(text) {
+    let tempArray = []; 
+    for (var i=0; i < this.state.rawData.length; i++) {
+      let productname = this.state.rawData[i].product.toLowerCase();
+      if (productname.includes(text.toLowerCase())) {
+        tempArray.push(this.state.rawData[i]);
+      }
+    }
+    return tempArray;
   }
-  */
 
-  onRefresh = async () => {
-    // this.setState({
-    //   isRefreshing: true
-    // });
+  filterByCompanyName(text) {
+    let tempArray = []; 
+    for (var i=0; i < this.state.rawData.length; i++) {
+      let companyname = this.state.rawData[i].companyname.toLowerCase();
+      if (companyname.includes(text.toLowerCase())) {
+        tempArray.push(this.state.rawData[i]);
+      }
+    }
+    return tempArray;
+  }
 
-    // this.setState({
-    //   isRefreshing: false
-    // });
+  searchBarClearTextHandler() {
+    console.log("==============> searchBarClearTextHandler");
   }
 
   getSalesOpportunities() {
-    console.log("================> onRefresh");
-    // this.setState({ loading: true });
-    appServices.getSalesOpportunitiesFromServer(this, (error, result) => {
+    this.setState({ refreshing: true });
+    appServices.getSalesOpportunitiesFromServer((error, result) => {
       if (!error) {
-        const { page, seed } = this.state;
+
+        console.log("==============> getSalesOpportunities result: " + JSON.stringify(result));
+
         this.setState({
-          data: page === 1 ? result : [...this.state.data, ...result],
+          rawData: result,
+          filteredData: result,
           error: result.error || null,
-          loading: false,
           refreshing: false,
         });
 
       } else {
-
         console.error(error);
-
+        this.setState({ refreshing: false });
       }
     });
   }
 
-  someFun() {
-    console.log("================> someFun");
-    this.onRefresh();
+  refreshSalesOpportunities() {
+    this.getSalesOpportunities();
   }
-  
+
+  dismissModalAndUpdate() {
+    this.setState({ modalVisible: false });
+    this.refreshSalesOpportunities();
+  }
+
   render() {
     const { navigate } = this.props.navigation;
     return (
-      <View>
-        <Button
-          title="Post new sales"
-          onPress={() => navigate('NewOpportunity', { data: this.state.data })}
-          // onPress={() => this.someFun()}
+      <View style={styles.container}>
+
+        <Modal animationType={"slide"} transparent={false}
+          visible={this.state.modalVisible}
+          onRequestClose={() => { console.log("Modal has been closed.") }}>
+          <NewSalesOpportunityPanel currentUser={this.props.screenProps.currentUser} 
+            dismissModalAndUpdate={this.dismissModalAndUpdate} />
+        </Modal>
+
+        <Button style={styles.postNewButton}
+          title={"Post new sales"}
+          onPress={() => this.setState({ modalVisible: true })}
         />
-        <Button
-          title="Refresh"
-          onPress={() => this.someFun()}
-        />
-        <FlatList
-          ListHeaderComponent={this.renderHeader}
-          data={this.state.data}
-          extraData={this.state.data}
-          // onRefresh={this.someFun}
-          // refreshing={this.state.refreshing}
+
+        <SearchBar placeholder="Type Here..." lightTheme clearIcon
+          onChangeText={this.searchBarChangeTextHandler}
+          onClearText={this.searchBarClearTextHandler} />
+
+        <FlatList style={styles.opportunityList}
+          data={this.state.filteredData}
+          extraData={this.state.filteredData}
+          onRefresh={() => this.refreshSalesOpportunities()}
+          refreshing={this.state.refreshing}
+          onEndReachedThreshold={0.5}
           keyExtractor={item => item.id}
           renderItem={({ item }) => (
             <ListItem
               roundAvatar
-              title={`${item.companyname}`}
-              subtitle={`${item.description}`}
+              title={`${item.product}`}
+              subtitle={`${item.companyname}`}
               rightTitle={`$${item.price}`}
+              onPress={() => navigate('Detail', { 
+                currentUser: this.props.screenProps.currentUser, 
+                item: item
+              })}
               /*
               avatar={{ uri: item.picture.thumbnail }}
               */
@@ -138,22 +175,17 @@ class OpportunitiesScreen extends React.Component {
   }
 }
 
-const OppotunitiesStackNav = StackNavigator({
-  OpportunitiesList: { screen: OpportunitiesScreen },
-  NewOpportunity: { screen: NewSalesOpportunityScreen },
-});
-
-export default class App extends React.Component {
-  render() {
-    return <OppotunitiesStackNav />;
-  }
-}
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 0,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center'
+  },
+  postNewButton: {
+    
+  },
+  opportunityList: {
+    borderWidth: 1,
+    borderColor: 'darkgrey'
   }
 });

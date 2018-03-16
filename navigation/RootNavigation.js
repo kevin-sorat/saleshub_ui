@@ -4,12 +4,16 @@ import { StackNavigator } from 'react-navigation';
 
 import MainTabNavigator from './MainTabNavigator';
 import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync';
+import DetailScreen from '../screens/DetailScreen';
 
 const RootStackNavigator = StackNavigator(
   {
     Main: {
       screen: MainTabNavigator,
     },
+    Detail: {
+      screen: DetailScreen,
+    }
   },
   {
     navigationOptions: () => ({
@@ -29,8 +33,12 @@ export default class RootNavigator extends React.Component {
     this._notificationSubscription && this._notificationSubscription.remove();
   }
 
+  componentWillReceiveProps(nextProps) {
+    console.log("==============> componentWillReceiveProps 1");
+  }
+
   render() {
-    return <RootStackNavigator />;
+    return <RootStackNavigator screenProps={this.props}/>;
   }
 
   _registerForPushNotifications() {

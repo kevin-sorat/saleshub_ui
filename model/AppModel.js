@@ -1,24 +1,28 @@
 
 import SalesOpportunity from "./SalesOpportunity";
 
-const singleton = Symbol();
-const singletonEnforcer = Symbol();
+class AppModel {
 
-export default class AppModel {
-
-    _salesOpportunities;
+    // _salesOpportunities;
+    _currentUser
 
     constructor(enforcer) {
-        if(enforcer != singletonEnforcer) throw "Cannot construct singleton";
+        this._currentUser = new Object();
+        this._currentUser.nickname = "--"
+        this._currentUser.userID = "--";
+        this._currentUser.email = "--";
     }
     
+    /*
     static get instance() {
         if(!this[singleton]) {
             this[singleton] = new AppModel(singletonEnforcer);
         }
         return this[singleton];
     }
+    */
 
+    /*
     addSalesOpportunity(newSaleOpportunity) {
         if (!this._salesOpportunities) {
             this._salesOpportunities = [];
@@ -29,4 +33,15 @@ export default class AppModel {
     removeSalesOpportunity(index) {
         this._salesOpportunities.splice(index, 1);
     }
+    */
+
+    get currentUser() {
+        return this._currentUser;
+    }
+
+    set currentUser(user) {
+        this._currentUser = user;
+    }
 }
+
+export default new AppModel();

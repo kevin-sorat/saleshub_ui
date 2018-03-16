@@ -1,12 +1,13 @@
 
 export default class SalesOpportunity {
 
-    constructor(companyname, description, price, commission) {
+    constructor(companyname, description, price, commission, userid) {
         // this._salesOpportunityID = 
         this._companyname = companyname;
         this._description = description;
         this._price = price;
         this._commission = commission;
+        this._userid = userid;
     }
 
     get companyname() {
@@ -39,5 +40,13 @@ export default class SalesOpportunity {
 
     set commission(commission) {
         this._commission = commission;
+    }
+
+    get userid() {
+        return this._userid;
+    }
+
+    set userid(userid) {
+        this._userid = userid;
     }
 }
