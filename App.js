@@ -28,7 +28,7 @@ export default class App extends React.Component {
       }; 
 
       // const currentUser = AppModel.currentUser;
-      this.currentUser.nickname = "Test User 7";
+      this.currentUser.nickname = "Casanova";
       this.currentUser.userID = "007";
       this.currentUser.email = "kevinsorat@gmail.com";
       // alert("Hello " + AppModel.currentUser.nickname + "!!!, user_id: " + AppModel.currentUser.userID + ", email: " + AppModel.currentUser.email);
@@ -126,7 +126,7 @@ export default class App extends React.Component {
 
   setCompanyInfo(companyInfoObj) {
     if (companyInfoObj && companyInfoObj.length > 0) {
-      console.log("==========================> setCompanyInfo: " + companyInfoObj.companyname);
+      // console.log("==========================> setCompanyInfo: " + companyInfoObj.companyname);
       // this.setState({ companyInfo: companyInfoObj });
       this.companyInfo = companyInfoObj;
     }

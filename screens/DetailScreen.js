@@ -5,11 +5,12 @@ import { ExpoLinksView } from '@expo/samples';
 
 export default class DetailScreen extends React.Component {
   static navigationOptions = {
-    title: 'Opportunity Details',
+    title: 'Details',
   };
 
   render() {
     const { params } = this.props.navigation.state;
+    const { navigate} = this.props.navigation;
     return (
       <ScrollView style={styles.container}>
 
@@ -65,7 +66,11 @@ export default class DetailScreen extends React.Component {
             style={styles.button}
             backgroundColor='darkblue'
             containerViewStyle={{ borderWidth: 0.5 }}
-            title='Contact Poster' />
+            title='Contact Poster'
+            onPress={() => navigate('Chat', { 
+              currentUser: params.currentUser,
+              item: params.item
+            })} />
           <Button
             style={styles.button}
             backgroundColor='darkblue'

@@ -19,7 +19,7 @@ export function makeRemoteRequest(uicomponent) {
 };
     
 export function getSalesOpportunitiesFromServer(callback) {
-  console.log("==================> getSalesOpportunitiesFromServer!!!");
+  console.log("==================> getSalesOpportunitiesFromServer...");
 
   const url = "https://salesmanhub.mybluemix.net/api/salesopportunities";
   fetch(url)
@@ -33,7 +33,7 @@ export function getSalesOpportunitiesFromServer(callback) {
 }
 
 export function createNewSalesOpportunity(salesOpportunity, callback) {
-  console.log("==================> createNewSalesOpportunity!!!");
+  console.log("==================> createNewSalesOpportunity...");
   
   const url = "https://salesmanhub.mybluemix.net/api/salesopportunities";
   fetch(url, {
@@ -43,6 +43,8 @@ export function createNewSalesOpportunity(salesOpportunity, callback) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
+      id: salesOpportunity.id,
+      rev: salesOpportunity.rev,
       companyname: salesOpportunity.companyname,
       product: salesOpportunity.product,
       description: salesOpportunity.description,
@@ -62,7 +64,7 @@ export function createNewSalesOpportunity(salesOpportunity, callback) {
 }
 
 export function getCompanyInfoFromServer(userid, callback) {
-  console.log("==================> getCompanyInfoFromServer!!!");
+  console.log("==================> getCompanyInfoFromServer...");
 
   const url = "https://salesmanhub.mybluemix.net/api/companyinfo?userid=" + userid;
   fetch(url)
@@ -76,7 +78,7 @@ export function getCompanyInfoFromServer(userid, callback) {
 }
 
 export function createCompanyInfo(companyinfo, callback) {
-  console.log("==================> createCompanyInfo!!!");
+  console.log("==================> createCompanyInfo...");
   
   const url = "https://salesmanhub.mybluemix.net/api/companyinfo";
   fetch(url, {
@@ -113,7 +115,7 @@ export function createCompanyInfo(companyinfo, callback) {
 }
 
 export function deleteCompanyInfo(companyinfo, callback) {
-  console.log("==================> deleteCompanyInfo!!!");
+  console.log("==================> deleteCompanyInfo...");
   
   const url = "https://salesmanhub.mybluemix.net/api/companyinfo";
   fetch(url, {
@@ -134,4 +136,47 @@ export function deleteCompanyInfo(companyinfo, callback) {
     .catch(function (error) {
       console.log('Request failed', error);
     });
+}
+
+export function saveChatRoom(chatRoomObj, callback) {
+  console.log("==================> saveChatRoom...");
+
+  const url = "https://salesmanhub.mybluemix.net/api/chatroom";
+  fetch(url, {
+    method: "post",
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      id: chatRoomObj.id,
+      rev: chatRoomObj.rev,
+      salesmanUserID: chatRoomObj.salesmanUserID,
+      companyUserID: chatRoomObj.companyUserID,
+      salesOppID: chatRoomObj.salesOppID,
+      messages: chatRoomObj.messages
+    })
+  })
+    .then(function (data) {
+      console.log('Request succeeded with JSON response', data);
+      callback();
+    })
+    .catch(function (error) {
+      console.log('Request failed', error);
+    });
+}
+
+export function getChatRoom(salesmanUserID, companyUserID, salesOppID, callback) {
+  console.log("==================> getChatRoom...");
+  
+    const url = "https://salesmanhub.mybluemix.net/api/chatroom?salesmanUserID=" + salesmanUserID +
+      "&companyUserID=" + companyUserID + "&salesOppID=" + salesOppID;
+    fetch(url)
+      .then(res => res.json())
+      .then(res => {
+        return callback(null, res);
+      })
+      .catch(error => {
+        return callback(error);
+      });
 }

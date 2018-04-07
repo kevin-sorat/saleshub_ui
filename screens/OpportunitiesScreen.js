@@ -31,7 +31,7 @@ export default class OpportunitiesScreen extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log("==============> componentWillReceiveProps 2");
+    // console.log("==============> componentWillReceiveProps 2");
     /*
     if (this.props.companyInfo !== nextProps.companyInfo) {
       console.log("==============> componentWillReceiveProps 2");
@@ -46,7 +46,7 @@ export default class OpportunitiesScreen extends React.Component {
 
   searchBarChangeTextHandler(e) {
     let text = e.toLowerCase();
-    console.log("==============> searchBarChangeTextHandler:" + text);
+    // console.log("==============> searchBarChangeTextHandler:" + text);
 
     this.applyFilter(text);
   }
@@ -61,8 +61,8 @@ export default class OpportunitiesScreen extends React.Component {
       // let filterByCompanyNameResults = this.filterByCompanyName(text);
       let filteredResults = filterByProductNameResults;
 
-      console.log("text: " + text);
-      console.log("filteredResults: " + JSON.stringify(filteredResults));
+      // console.log("text: " + text);
+      // console.log("filteredResults: " + JSON.stringify(filteredResults));
 
       this.setState({
         filteredData: filteredResults,
@@ -93,7 +93,7 @@ export default class OpportunitiesScreen extends React.Component {
   }
 
   searchBarClearTextHandler() {
-    console.log("==============> searchBarClearTextHandler");
+    // console.log("==============> searchBarClearTextHandler");
   }
 
   getSalesOpportunities() {
@@ -101,7 +101,7 @@ export default class OpportunitiesScreen extends React.Component {
     appServices.getSalesOpportunitiesFromServer((error, result) => {
       if (!error) {
 
-        console.log("==============> getSalesOpportunities result: " + JSON.stringify(result));
+        // console.log("==============> getSalesOpportunities result: " + JSON.stringify(result));
 
         this.setState({
           rawData: result,

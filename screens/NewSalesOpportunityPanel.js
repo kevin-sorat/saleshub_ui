@@ -11,7 +11,10 @@ export default class NewSalesOpportunityPanel extends React.Component {
     super(props);
 
     this.state = {
-      nameInput: "",
+      id: "",
+      rev: "",
+      companyNameInput: "",
+      productNameInput: "",
       descInput: "",
       priceInput: "",
       commissionInput: "",
@@ -22,14 +25,14 @@ export default class NewSalesOpportunityPanel extends React.Component {
   }
 
   componentDidMount() {
-    console.log("==============> componentDidMount");
+    // console.log("==============> componentDidMount");
     this.getCompanyInfo();
     /*
     if (this.props.companyInfo &&
       this.props.companyInfo.companyname &&
       this.props.companyInfo.companyname.length > 0) {
-      this.setState({ nameInput: this.props.companyInfo.companyname });
-      console.log("==============> companyname: " + this.state.nameInput);
+      this.setState({ companyNameInput: this.props.companyInfo.companyname });
+      console.log("==============> companyname: " + this.state.companyNameInput);
     }
     */
   }
@@ -37,9 +40,9 @@ export default class NewSalesOpportunityPanel extends React.Component {
   getCompanyInfo() {
     appServices.getCompanyInfoFromServer(this.state.userid, (error, result) => {
       if (!error) {
-        this.setState({ nameInput: result.companyname });
+        this.setState({ companyNameInput: result.companyname });
       }
-      console.log("==============> companyname: " + this.state.nameInput);
+      // console.log("==============> companyname: " + this.state.companyNameInput);
     });
   }
 
@@ -51,23 +54,23 @@ export default class NewSalesOpportunityPanel extends React.Component {
       if (this.props.companyInfo &&
         this.props.companyInfo.companyname &&
         this.props.companyInfo.companyname.length > 0) {
-        this.setState({ nameInput: this.props.companyInfo.companyname });
+        this.setState({ companyNameInput: this.props.companyInfo.companyname });
       }
     }
   }
   */
 
   submitButtonOnPressHandler() {
-    let newSalesOpportunityObj = new SalesOpportunity(this.state.nameInput,
-      this.state.descInput, this.state.priceInput, this.state.commissionInput, this.state.userid);
+    let newSalesOpportunityObj = new SalesOpportunity(this.state.id, this.state.rev, this.state.companyNameInput,
+      this.state.productNameInput, this.state.descInput, this.state.priceInput, this.state.commissionInput, this.state.userid);
 
     // Call function to save new sale opportunity on the server
     appServices.createNewSalesOpportunity(newSalesOpportunityObj, this.props.dismissModalAndUpdate);
   }
 
   _isFormComplete() {
-    return (this.state.nameInput.length > 0 && this.state.descInput.length > 0 &&
-      this.state.priceInput.length > 0 && this.state.commissionInput.length > 0);
+    return (this.state.companyNameInput.length > 0 && this.state.productNameInput.length > 0 && 
+      this.state.descInput.length > 0 && this.state.priceInput.length > 0 && this.state.commissionInput.length > 0);
   }
 
   render() {
@@ -83,10 +86,16 @@ export default class NewSalesOpportunityPanel extends React.Component {
             <FormLabel>Company name</FormLabel>
             <FormInput
               style={styles.formInput}
-              value={this.state.nameInput}
-              onChangeText={nameInput => this.setState({ nameInput })}
+              value={this.state.companyNameInput}
+              onChangeText={companyNameInput => this.setState({ companyNameInput })}
             />
-            <FormLabel>Product/Service description</FormLabel>
+            <FormLabel>Product name</FormLabel>
+            <FormInput
+              style={styles.formInput}
+              value={this.state.productNameInput}
+              onChangeText={productNameInput => this.setState({ productNameInput })}
+            />
+            <FormLabel>Product description</FormLabel>
             <FormInput
               style={styles.formInput}
               multiline={true}

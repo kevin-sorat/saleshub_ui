@@ -39,9 +39,7 @@ export default class UserProfileScreen extends React.Component {
   getCompanyInfo() {
     appServices.getCompanyInfoFromServer(this.props.screenProps.currentUser.userID, (error, result) => {
       if (!error) {
-
-        console.log("==============> result: " + JSON.stringify(result));
-
+        // console.log("==============> result: " + JSON.stringify(result));
         this.setState({
           isCompany: true,
           id: result.id,
@@ -52,7 +50,8 @@ export default class UserProfileScreen extends React.Component {
         });
 
         let companyInfoObj = new CompanyInfo(this.state.id, this.state.rev, this.state.companyNameFormInput,
-          this.state.addressFormInput, this.state.phoneFormInput, this.props.screenProps.currentUser.userID);
+          this.state.addressFormInput, this.state.phoneFormInput, this.props.screenProps.currentUser.userID,
+          this.props.screenProps.currentUser.nickname, this.props.screenProps.currentUser.email);
         this.props.screenProps.setCompanyInfo(companyInfoObj);
       }
     });
@@ -80,7 +79,8 @@ export default class UserProfileScreen extends React.Component {
 
   saveButtonOnPressHandler() {
     let newCompanyInfoObj = new CompanyInfo(this.state.id, this.state.rev, this.state.companyNameFormInput,
-      this.state.addressFormInput, this.state.phoneFormInput, this.props.screenProps.currentUser.userID);
+      this.state.addressFormInput, this.state.phoneFormInput, this.props.screenProps.currentUser.userID,
+      this.props.screenProps.currentUser.nickname, this.props.screenProps.currentUser.email);
 
     if (this.state.isCompany) {
       // TODO: Call the backend to save compnay info linked to user id
@@ -96,7 +96,7 @@ export default class UserProfileScreen extends React.Component {
   }
 
   createCompanyInfoCallback() {
-    console.log("Company Info of has been saved.")
+    console.log("Company Info has been saved.")
     this.setState({
       isFormDirty: false
     });

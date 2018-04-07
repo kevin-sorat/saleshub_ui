@@ -5,6 +5,7 @@ import { StackNavigator } from 'react-navigation';
 import MainTabNavigator from './MainTabNavigator';
 import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync';
 import DetailScreen from '../screens/DetailScreen';
+import ChatScreen from '../screens/ChatScreen';
 
 const RootStackNavigator = StackNavigator(
   {
@@ -13,6 +14,9 @@ const RootStackNavigator = StackNavigator(
     },
     Detail: {
       screen: DetailScreen,
+    },
+    Chat: {
+      screen: ChatScreen,
     }
   },
   {
@@ -34,7 +38,7 @@ export default class RootNavigator extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log("==============> componentWillReceiveProps 1");
+    // console.log("==============> componentWillReceiveProps 1");
   }
 
   render() {
