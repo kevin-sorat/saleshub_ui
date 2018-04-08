@@ -24,38 +24,19 @@ export default class ChatScreen extends React.Component {
     componentWillMount() {
         const { params } = this.props.navigation.state;
 
-        appServices.getChatRoom(params.currentUser.userID, params.item.userid, params.item.id, (error, result) => {
-            if (!error) {
-                // console.log("==============> result: " + JSON.stringify(result));
-                console.log("==============> getChatRoom... ");
-                this.setState({ id: result.id, rev: result.rev, messages: result.messages });
-            }
-        });
+        this.refreshIntervalId = setInterval(()=> {
+            appServices.getChatRoom(params.currentUser.userID, params.item.userid, params.item.id, (error, result) => {
+                if (!error) {
+                    // console.log("==============> result: " + JSON.stringify(result));
+                    this.setState({ id: result.id, rev: result.rev, messages: result.messages });
+                }
+            });
+        }, 3000);
     }
 
-    componentDidMount() {
-        /*
-        const { params } = this.props.navigation.state;
-        this.poll(
-            () => {
-                console.log("==============> polling... ");
-                appServices.getChatRoom(params.currentUser.userID, params.item.userid, params.item.id, (error, result) => {
-                    if (!error) {
-                        // console.log("==============> result: " + JSON.stringify(result));
-                        this.setState({ id: result.id, rev: result.rev, messages: result.messages });
-                    }
-                });
-            },
-            () => {
-                // Done, success callback
-                console.log("==============> polling succeed... ");
-            },
-            () => {
-                // Error, failure callback
-                console.log("==============> polling failed... ");
-            }
-        );
-        */
+    componentWillUnmount() {
+        // console.log("==============> clearInterval");
+        clearInterval(this.refreshIntervalId);
     }
 
     onSend(messages = []) {
